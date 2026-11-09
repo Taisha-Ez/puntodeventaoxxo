@@ -17,6 +17,10 @@ import { MetodosPagoModule } from './metodos-pago/metodos-pago.module';
 import { VentasModule } from './ventas/ventas.module';
 import { DevolucionesModule } from './devoluciones/devoluciones.module';
 import { SeedModule } from './seed/seed.module';
+import { APP_GUARD } from '@nestjs/core';
+import { JwtAuthGuard } from './auth/guards/jwt-auth.guard';
+import { RolesGuard } from './auth/guards/roles.guard';
+import { AuthModule } from './auth/auth.module';
 
 @Module({
   imports: [
@@ -48,8 +52,15 @@ import { SeedModule } from './seed/seed.module';
     VentasModule,
     DevolucionesModule,
     SeedModule,
+    AuthModule,
   ],
+
   controllers: [AppController],
-  providers: [AppService],
+
+  providers: [
+  AppService,
+  { provide: APP_GUARD, useClass: JwtAuthGuard },
+  { provide: APP_GUARD, useClass: RolesGuard },
+],
 })
 export class AppModule {}
