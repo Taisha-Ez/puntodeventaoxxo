@@ -16,6 +16,7 @@ import { TurnosCajaModule } from './turnos-caja/turnos-caja.module';
 import { MetodosPagoModule } from './metodos-pago/metodos-pago.module';
 import { VentasModule } from './ventas/ventas.module';
 import { DevolucionesModule } from './devoluciones/devoluciones.module';
+import { SeedModule } from './seed/seed.module';
 
 @Module({
   imports: [
@@ -46,6 +47,7 @@ import { DevolucionesModule } from './devoluciones/devoluciones.module';
     MetodosPagoModule,
     VentasModule,
     DevolucionesModule,
+    SeedModule,
   ],
   controllers: [AppController],
   providers: [AppService],
