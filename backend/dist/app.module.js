@@ -12,6 +12,24 @@ const config_1 = require("@nestjs/config");
 const typeorm_1 = require("@nestjs/typeorm");
 const app_controller_1 = require("./app.controller");
 const app_service_1 = require("./app.service");
+const roles_module_1 = require("./roles/roles.module");
+const usuarios_module_1 = require("./usuarios/usuarios.module");
+const categorias_module_1 = require("./categorias/categorias.module");
+const proveedores_module_1 = require("./proveedores/proveedores.module");
+const productos_module_1 = require("./productos/productos.module");
+const promociones_module_1 = require("./promociones/promociones.module");
+const movimientos_inventario_module_1 = require("./movimientos-inventario/movimientos-inventario.module");
+const compras_module_1 = require("./compras/compras.module");
+const cajas_module_1 = require("./cajas/cajas.module");
+const turnos_caja_module_1 = require("./turnos-caja/turnos-caja.module");
+const metodos_pago_module_1 = require("./metodos-pago/metodos-pago.module");
+const ventas_module_1 = require("./ventas/ventas.module");
+const devoluciones_module_1 = require("./devoluciones/devoluciones.module");
+const seed_module_1 = require("./seed/seed.module");
+const core_1 = require("@nestjs/core");
+const jwt_auth_guard_1 = require("./auth/guards/jwt-auth.guard");
+const roles_guard_1 = require("./auth/guards/roles.guard");
+const auth_module_1 = require("./auth/auth.module");
 let AppModule = class AppModule {
 };
 exports.AppModule = AppModule;
@@ -32,9 +50,28 @@ exports.AppModule = AppModule = __decorate([
                     synchronize: true,
                 }),
             }),
+            roles_module_1.RolesModule,
+            usuarios_module_1.UsuariosModule,
+            categorias_module_1.CategoriasModule,
+            proveedores_module_1.ProveedoresModule,
+            productos_module_1.ProductosModule,
+            promociones_module_1.PromocionesModule,
+            movimientos_inventario_module_1.MovimientosInventarioModule,
+            compras_module_1.ComprasModule,
+            cajas_module_1.CajasModule,
+            turnos_caja_module_1.TurnosCajaModule,
+            metodos_pago_module_1.MetodosPagoModule,
+            ventas_module_1.VentasModule,
+            devoluciones_module_1.DevolucionesModule,
+            seed_module_1.SeedModule,
+            auth_module_1.AuthModule,
         ],
         controllers: [app_controller_1.AppController],
-        providers: [app_service_1.AppService],
+        providers: [
+            app_service_1.AppService,
+            { provide: core_1.APP_GUARD, useClass: jwt_auth_guard_1.JwtAuthGuard },
+            { provide: core_1.APP_GUARD, useClass: roles_guard_1.RolesGuard },
+        ],
     })
 ], AppModule);
 //# sourceMappingURL=app.module.js.map
