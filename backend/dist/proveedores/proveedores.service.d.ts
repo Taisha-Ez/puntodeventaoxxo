@@ -1,9 +1,15 @@
+import { Repository } from 'typeorm';
+import { Proveedor } from './entities/proveedore.entity';
 import { CreateProveedoreDto } from './dto/create-proveedore.dto';
-import { UpdateProveedoreDto } from './dto/update-proveedore.dto';
+import { UpdateProveedorDto } from './dto/update-proveedore.dto';
 export declare class ProveedoresService {
-    create(createProveedoreDto: CreateProveedoreDto): string;
-    findAll(): string;
-    findOne(id: number): string;
-    update(id: number, updateProveedoreDto: UpdateProveedoreDto): string;
-    remove(id: number): string;
+    private readonly proveedorRepo;
+    constructor(proveedorRepo: Repository<Proveedor>);
+    create(dto: CreateProveedoreDto): Promise<Proveedor>;
+    findAll(): Promise<Proveedor[]>;
+    findOne(id: number): Promise<Proveedor>;
+    update(id: number, dto: UpdateProveedorDto): Promise<Proveedor>;
+    remove(id: number): Promise<{
+        mensaje: string;
+    }>;
 }

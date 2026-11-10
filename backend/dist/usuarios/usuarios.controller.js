@@ -17,25 +17,27 @@ const common_1 = require("@nestjs/common");
 const usuarios_service_1 = require("./usuarios.service");
 const create_usuario_dto_1 = require("./dto/create-usuario.dto");
 const update_usuario_dto_1 = require("./dto/update-usuario.dto");
+const roles_decorator_1 = require("../auth/decorators/roles.decorator");
+const usuario_actual_decorator_1 = require("../auth/decorators/usuario-actual.decorator");
 let UsuariosController = class UsuariosController {
     usuariosService;
     constructor(usuariosService) {
         this.usuariosService = usuariosService;
     }
-    create(createUsuarioDto) {
-        return this.usuariosService.create(createUsuarioDto);
+    create(dto) {
+        return this.usuariosService.create(dto);
     }
     findAll() {
         return this.usuariosService.findAll();
     }
     findOne(id) {
-        return this.usuariosService.findOne(+id);
+        return this.usuariosService.findOne(id);
     }
-    update(id, updateUsuarioDto) {
-        return this.usuariosService.update(+id, updateUsuarioDto);
+    update(id, dto, actual) {
+        return this.usuariosService.update(id, dto, actual.id);
     }
-    remove(id) {
-        return this.usuariosService.remove(+id);
+    remove(id, actual) {
+        return this.usuariosService.remove(id, actual.id);
     }
 };
 exports.UsuariosController = UsuariosController;
@@ -54,27 +56,30 @@ __decorate([
 ], UsuariosController.prototype, "findAll", null);
 __decorate([
     (0, common_1.Get)(':id'),
-    __param(0, (0, common_1.Param)('id')),
+    __param(0, (0, common_1.Param)('id', common_1.ParseIntPipe)),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [String]),
+    __metadata("design:paramtypes", [Number]),
     __metadata("design:returntype", void 0)
 ], UsuariosController.prototype, "findOne", null);
 __decorate([
     (0, common_1.Patch)(':id'),
-    __param(0, (0, common_1.Param)('id')),
+    __param(0, (0, common_1.Param)('id', common_1.ParseIntPipe)),
     __param(1, (0, common_1.Body)()),
+    __param(2, (0, usuario_actual_decorator_1.UsuarioActual)()),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [String, update_usuario_dto_1.UpdateUsuarioDto]),
+    __metadata("design:paramtypes", [Number, update_usuario_dto_1.UpdateUsuarioDto, Object]),
     __metadata("design:returntype", void 0)
 ], UsuariosController.prototype, "update", null);
 __decorate([
     (0, common_1.Delete)(':id'),
-    __param(0, (0, common_1.Param)('id')),
+    __param(0, (0, common_1.Param)('id', common_1.ParseIntPipe)),
+    __param(1, (0, usuario_actual_decorator_1.UsuarioActual)()),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [String]),
+    __metadata("design:paramtypes", [Number, Object]),
     __metadata("design:returntype", void 0)
 ], UsuariosController.prototype, "remove", null);
 exports.UsuariosController = UsuariosController = __decorate([
+    (0, roles_decorator_1.Roles)('lider'),
     (0, common_1.Controller)('usuarios'),
     __metadata("design:paramtypes", [usuarios_service_1.UsuariosService])
 ], UsuariosController);

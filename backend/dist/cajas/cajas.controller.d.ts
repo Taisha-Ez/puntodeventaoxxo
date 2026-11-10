@@ -4,9 +4,11 @@ import { UpdateCajaDto } from './dto/update-caja.dto';
 export declare class CajasController {
     private readonly cajasService;
     constructor(cajasService: CajasService);
-    create(createCajaDto: CreateCajaDto): string;
-    findAll(): string;
-    findOne(id: string): string;
-    update(id: string, updateCajaDto: UpdateCajaDto): string;
-    remove(id: string): string;
+    create(dto: CreateCajaDto): Promise<import("./entities/caja.entity").Caja>;
+    findAll(): Promise<import("./entities/caja.entity").Caja[]>;
+    findOne(id: number): Promise<import("./entities/caja.entity").Caja>;
+    update(id: number, dto: UpdateCajaDto): Promise<import("./entities/caja.entity").Caja>;
+    remove(id: number): Promise<{
+        mensaje: string;
+    }>;
 }

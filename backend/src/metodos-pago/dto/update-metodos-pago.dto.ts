@@ -1,4 +1,9 @@
 import { PartialType } from '@nestjs/mapped-types';
-import { CreateMetodosPagoDto } from './create-metodos-pago.dto';
-
-export class UpdateMetodosPagoDto extends PartialType(CreateMetodosPagoDto) {}
+import { IsBoolean, IsOptional } from 'class-validator';
+import { CreateMetodoPagoDto } from './create-metodos-pago.dto';
+ 
+export class UpdateMetodoPagoDto extends PartialType(CreateMetodoPagoDto) {
+  @IsOptional()
+  @IsBoolean()
+  activo?: boolean;
+}

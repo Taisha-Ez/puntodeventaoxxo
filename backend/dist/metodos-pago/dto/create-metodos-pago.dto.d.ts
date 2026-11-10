@@ -1,2 +1,3 @@
-export declare class CreateMetodosPagoDto {
+export declare class CreateMetodoPagoDto {
+    nombre: string;
 }

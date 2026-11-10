@@ -1,1 +1,1 @@
-{"version":3,"file":"update-movimientos-inventario.dto.js","sourceRoot":"","sources":["../../../src/movimientos-inventario/dto/update-movimientos-inventario.dto.ts"],"names":[],"mappings":";;;AAAA,uDAAmD;AACnD,2FAAqF;AAErF,MAAa,8BAA+B,SAAQ,IAAA,0BAAW,EAAC,kEAA8B,CAAC;CAAG;AAAlG,wEAAkG"}
+{"version":3,"file":"update-movimientos-inventario.dto.js","sourceRoot":"","sources":["../../../src/movimientos-inventario/dto/update-movimientos-inventario.dto.ts"],"names":[],"mappings":";;;AAAA,uDAAmD;AACnD,2FAAoF;AAEpF,MAAa,8BAA+B,SAAQ,IAAA,0BAAW,EAAC,iEAA6B,CAAC;CAAG;AAAjG,wEAAiG"}

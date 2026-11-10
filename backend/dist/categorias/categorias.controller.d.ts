@@ -4,11 +4,11 @@ import { UpdateCategoriaDto } from './dto/update-categoria.dto';
 export declare class CategoriasController {
     private readonly categoriasService;
     constructor(categoriasService: CategoriasService);
-    create(createCategoriaDto: CreateCategoriaDto): Promise<import("./entities/categoria.entity").Categoria>;
+    create(dto: CreateCategoriaDto): Promise<import("./entities/categoria.entity").Categoria>;
     findAll(): Promise<import("./entities/categoria.entity").Categoria[]>;
-    findOne(id: string): Promise<import("./entities/categoria.entity").Categoria>;
-    update(id: string, updateCategoriaDto: UpdateCategoriaDto): Promise<import("./entities/categoria.entity").Categoria>;
-    remove(id: string): Promise<{
+    findOne(id: number): Promise<import("./entities/categoria.entity").Categoria>;
+    update(id: number, dto: UpdateCategoriaDto): Promise<import("./entities/categoria.entity").Categoria>;
+    remove(id: number): Promise<{
         mensaje: string;
     }>;
 }

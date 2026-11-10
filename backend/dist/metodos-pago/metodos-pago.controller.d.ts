@@ -1,12 +1,14 @@
 import { MetodosPagoService } from './metodos-pago.service';
-import { CreateMetodosPagoDto } from './dto/create-metodos-pago.dto';
-import { UpdateMetodosPagoDto } from './dto/update-metodos-pago.dto';
+import { CreateMetodoPagoDto } from './dto/create-metodos-pago.dto';
+import { UpdateMetodoPagoDto } from './dto/update-metodos-pago.dto';
 export declare class MetodosPagoController {
     private readonly metodosPagoService;
     constructor(metodosPagoService: MetodosPagoService);
-    create(createMetodosPagoDto: CreateMetodosPagoDto): string;
-    findAll(): string;
-    findOne(id: string): string;
-    update(id: string, updateMetodosPagoDto: UpdateMetodosPagoDto): string;
-    remove(id: string): string;
+    create(dto: CreateMetodoPagoDto): Promise<import("./entities/metodos-pago.entity").MetodoPago>;
+    findAll(): Promise<import("./entities/metodos-pago.entity").MetodoPago[]>;
+    findOne(id: number): Promise<import("./entities/metodos-pago.entity").MetodoPago>;
+    update(id: number, dto: UpdateMetodoPagoDto): Promise<import("./entities/metodos-pago.entity").MetodoPago>;
+    remove(id: number): Promise<{
+        mensaje: string;
+    }>;
 }
