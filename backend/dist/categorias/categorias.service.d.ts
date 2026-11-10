@@ -1,9 +1,15 @@
+import { Repository } from 'typeorm';
+import { Categoria } from './entities/categoria.entity';
 import { CreateCategoriaDto } from './dto/create-categoria.dto';
 import { UpdateCategoriaDto } from './dto/update-categoria.dto';
 export declare class CategoriasService {
-    create(createCategoriaDto: CreateCategoriaDto): string;
-    findAll(): string;
-    findOne(id: number): string;
-    update(id: number, updateCategoriaDto: UpdateCategoriaDto): string;
-    remove(id: number): string;
+    private readonly categoriaRepo;
+    constructor(categoriaRepo: Repository<Categoria>);
+    create(dto: CreateCategoriaDto): Promise<Categoria>;
+    findAll(): Promise<Categoria[]>;
+    findOne(id: number): Promise<Categoria>;
+    update(id: number, dto: UpdateCategoriaDto): Promise<Categoria>;
+    remove(id: number): Promise<{
+        mensaje: string;
+    }>;
 }
