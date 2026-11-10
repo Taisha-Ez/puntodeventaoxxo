@@ -17,29 +17,31 @@ const common_1 = require("@nestjs/common");
 const categorias_service_1 = require("./categorias.service");
 const create_categoria_dto_1 = require("./dto/create-categoria.dto");
 const update_categoria_dto_1 = require("./dto/update-categoria.dto");
+const roles_decorator_1 = require("../auth/decorators/roles.decorator");
 let CategoriasController = class CategoriasController {
     categoriasService;
     constructor(categoriasService) {
         this.categoriasService = categoriasService;
     }
-    create(createCategoriaDto) {
-        return this.categoriasService.create(createCategoriaDto);
+    create(dto) {
+        return this.categoriasService.create(dto);
     }
     findAll() {
         return this.categoriasService.findAll();
     }
     findOne(id) {
-        return this.categoriasService.findOne(+id);
+        return this.categoriasService.findOne(id);
     }
-    update(id, updateCategoriaDto) {
-        return this.categoriasService.update(+id, updateCategoriaDto);
+    update(id, dto) {
+        return this.categoriasService.update(id, dto);
     }
     remove(id) {
-        return this.categoriasService.remove(+id);
+        return this.categoriasService.remove(id);
     }
 };
 exports.CategoriasController = CategoriasController;
 __decorate([
+    (0, roles_decorator_1.Roles)('lider'),
     (0, common_1.Post)(),
     __param(0, (0, common_1.Body)()),
     __metadata("design:type", Function),
@@ -54,24 +56,26 @@ __decorate([
 ], CategoriasController.prototype, "findAll", null);
 __decorate([
     (0, common_1.Get)(':id'),
-    __param(0, (0, common_1.Param)('id')),
+    __param(0, (0, common_1.Param)('id', common_1.ParseIntPipe)),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [String]),
+    __metadata("design:paramtypes", [Number]),
     __metadata("design:returntype", void 0)
 ], CategoriasController.prototype, "findOne", null);
 __decorate([
+    (0, roles_decorator_1.Roles)('lider'),
     (0, common_1.Patch)(':id'),
-    __param(0, (0, common_1.Param)('id')),
+    __param(0, (0, common_1.Param)('id', common_1.ParseIntPipe)),
     __param(1, (0, common_1.Body)()),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [String, update_categoria_dto_1.UpdateCategoriaDto]),
+    __metadata("design:paramtypes", [Number, update_categoria_dto_1.UpdateCategoriaDto]),
     __metadata("design:returntype", void 0)
 ], CategoriasController.prototype, "update", null);
 __decorate([
+    (0, roles_decorator_1.Roles)('lider'),
     (0, common_1.Delete)(':id'),
-    __param(0, (0, common_1.Param)('id')),
+    __param(0, (0, common_1.Param)('id', common_1.ParseIntPipe)),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [String]),
+    __metadata("design:paramtypes", [Number]),
     __metadata("design:returntype", void 0)
 ], CategoriasController.prototype, "remove", null);
 exports.CategoriasController = CategoriasController = __decorate([

@@ -1,9 +1,7 @@
-import { CreateRoleDto } from './dto/create-role.dto';
-import { UpdateRoleDto } from './dto/update-role.dto';
+import { Repository } from 'typeorm';
+import { Rol } from './entities/role.entity';
 export declare class RolesService {
-    create(createRoleDto: CreateRoleDto): string;
-    findAll(): string;
-    findOne(id: number): string;
-    update(id: number, updateRoleDto: UpdateRoleDto): string;
-    remove(id: number): string;
+    private readonly rolRepo;
+    constructor(rolRepo: Repository<Rol>);
+    findAll(): Promise<Rol[]>;
 }
