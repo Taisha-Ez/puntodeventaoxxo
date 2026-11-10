@@ -11,39 +11,42 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 var __param = (this && this.__param) || function (paramIndex, decorator) {
     return function (target, key) { decorator(target, key, paramIndex); }
 };
+var _a;
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.MetodosPagoController = void 0;
 const common_1 = require("@nestjs/common");
 const metodos_pago_service_1 = require("./metodos-pago.service");
 const create_metodos_pago_dto_1 = require("./dto/create-metodos-pago.dto");
 const update_metodos_pago_dto_1 = require("./dto/update-metodos-pago.dto");
+const roles_decorator_1 = require("../auth/decorators/roles.decorator");
 let MetodosPagoController = class MetodosPagoController {
     metodosPagoService;
     constructor(metodosPagoService) {
         this.metodosPagoService = metodosPagoService;
     }
-    create(createMetodosPagoDto) {
-        return this.metodosPagoService.create(createMetodosPagoDto);
+    create(dto) {
+        return this.metodosPagoService.create(dto);
     }
     findAll() {
         return this.metodosPagoService.findAll();
     }
     findOne(id) {
-        return this.metodosPagoService.findOne(+id);
+        return this.metodosPagoService.findOne(id);
     }
-    update(id, updateMetodosPagoDto) {
-        return this.metodosPagoService.update(+id, updateMetodosPagoDto);
+    update(id, dto) {
+        return this.metodosPagoService.update(id, dto);
     }
     remove(id) {
-        return this.metodosPagoService.remove(+id);
+        return this.metodosPagoService.remove(id);
     }
 };
 exports.MetodosPagoController = MetodosPagoController;
 __decorate([
+    (0, roles_decorator_1.Roles)('lider'),
     (0, common_1.Post)(),
     __param(0, (0, common_1.Body)()),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [create_metodos_pago_dto_1.CreateMetodosPagoDto]),
+    __metadata("design:paramtypes", [create_metodos_pago_dto_1.CreateMetodoPagoDto]),
     __metadata("design:returntype", void 0)
 ], MetodosPagoController.prototype, "create", null);
 __decorate([
@@ -54,24 +57,26 @@ __decorate([
 ], MetodosPagoController.prototype, "findAll", null);
 __decorate([
     (0, common_1.Get)(':id'),
-    __param(0, (0, common_1.Param)('id')),
+    __param(0, (0, common_1.Param)('id', common_1.ParseIntPipe)),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [String]),
+    __metadata("design:paramtypes", [Number]),
     __metadata("design:returntype", void 0)
 ], MetodosPagoController.prototype, "findOne", null);
 __decorate([
+    (0, roles_decorator_1.Roles)('lider'),
     (0, common_1.Patch)(':id'),
-    __param(0, (0, common_1.Param)('id')),
+    __param(0, (0, common_1.Param)('id', common_1.ParseIntPipe)),
     __param(1, (0, common_1.Body)()),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [String, update_metodos_pago_dto_1.UpdateMetodosPagoDto]),
+    __metadata("design:paramtypes", [Number, typeof (_a = typeof update_metodos_pago_dto_1.UpdateMetodoPagoDto !== "undefined" && update_metodos_pago_dto_1.UpdateMetodoPagoDto) === "function" ? _a : Object]),
     __metadata("design:returntype", void 0)
 ], MetodosPagoController.prototype, "update", null);
 __decorate([
+    (0, roles_decorator_1.Roles)('lider'),
     (0, common_1.Delete)(':id'),
-    __param(0, (0, common_1.Param)('id')),
+    __param(0, (0, common_1.Param)('id', common_1.ParseIntPipe)),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [String]),
+    __metadata("design:paramtypes", [Number]),
     __metadata("design:returntype", void 0)
 ], MetodosPagoController.prototype, "remove", null);
 exports.MetodosPagoController = MetodosPagoController = __decorate([

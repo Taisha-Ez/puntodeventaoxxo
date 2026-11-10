@@ -17,29 +17,31 @@ const common_1 = require("@nestjs/common");
 const cajas_service_1 = require("./cajas.service");
 const create_caja_dto_1 = require("./dto/create-caja.dto");
 const update_caja_dto_1 = require("./dto/update-caja.dto");
+const roles_decorator_1 = require("../auth/decorators/roles.decorator");
 let CajasController = class CajasController {
     cajasService;
     constructor(cajasService) {
         this.cajasService = cajasService;
     }
-    create(createCajaDto) {
-        return this.cajasService.create(createCajaDto);
+    create(dto) {
+        return this.cajasService.create(dto);
     }
     findAll() {
         return this.cajasService.findAll();
     }
     findOne(id) {
-        return this.cajasService.findOne(+id);
+        return this.cajasService.findOne(id);
     }
-    update(id, updateCajaDto) {
-        return this.cajasService.update(+id, updateCajaDto);
+    update(id, dto) {
+        return this.cajasService.update(id, dto);
     }
     remove(id) {
-        return this.cajasService.remove(+id);
+        return this.cajasService.remove(id);
     }
 };
 exports.CajasController = CajasController;
 __decorate([
+    (0, roles_decorator_1.Roles)('lider'),
     (0, common_1.Post)(),
     __param(0, (0, common_1.Body)()),
     __metadata("design:type", Function),
@@ -54,24 +56,26 @@ __decorate([
 ], CajasController.prototype, "findAll", null);
 __decorate([
     (0, common_1.Get)(':id'),
-    __param(0, (0, common_1.Param)('id')),
+    __param(0, (0, common_1.Param)('id', common_1.ParseIntPipe)),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [String]),
+    __metadata("design:paramtypes", [Number]),
     __metadata("design:returntype", void 0)
 ], CajasController.prototype, "findOne", null);
 __decorate([
+    (0, roles_decorator_1.Roles)('lider'),
     (0, common_1.Patch)(':id'),
-    __param(0, (0, common_1.Param)('id')),
+    __param(0, (0, common_1.Param)('id', common_1.ParseIntPipe)),
     __param(1, (0, common_1.Body)()),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [String, update_caja_dto_1.UpdateCajaDto]),
+    __metadata("design:paramtypes", [Number, update_caja_dto_1.UpdateCajaDto]),
     __metadata("design:returntype", void 0)
 ], CajasController.prototype, "update", null);
 __decorate([
+    (0, roles_decorator_1.Roles)('lider'),
     (0, common_1.Delete)(':id'),
-    __param(0, (0, common_1.Param)('id')),
+    __param(0, (0, common_1.Param)('id', common_1.ParseIntPipe)),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [String]),
+    __metadata("design:paramtypes", [Number]),
     __metadata("design:returntype", void 0)
 ], CajasController.prototype, "remove", null);
 exports.CajasController = CajasController = __decorate([

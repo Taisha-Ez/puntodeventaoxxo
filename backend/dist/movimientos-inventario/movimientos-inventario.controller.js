@@ -16,65 +16,48 @@ exports.MovimientosInventarioController = void 0;
 const common_1 = require("@nestjs/common");
 const movimientos_inventario_service_1 = require("./movimientos-inventario.service");
 const create_movimientos_inventario_dto_1 = require("./dto/create-movimientos-inventario.dto");
-const update_movimientos_inventario_dto_1 = require("./dto/update-movimientos-inventario.dto");
+const roles_decorator_1 = require("../auth/decorators/roles.decorator");
+const usuario_actual_decorator_1 = require("../auth/decorators/usuario-actual.decorator");
 let MovimientosInventarioController = class MovimientosInventarioController {
-    movimientosInventarioService;
-    constructor(movimientosInventarioService) {
-        this.movimientosInventarioService = movimientosInventarioService;
+    movimientosService;
+    constructor(movimientosService) {
+        this.movimientosService = movimientosService;
     }
-    create(createMovimientosInventarioDto) {
-        return this.movimientosInventarioService.create(createMovimientosInventarioDto);
+    create(dto, usuario) {
+        return this.movimientosService.create(dto, usuario.id);
     }
-    findAll() {
-        return this.movimientosInventarioService.findAll();
+    findAll(productoId) {
+        return this.movimientosService.findAll(productoId);
     }
     findOne(id) {
-        return this.movimientosInventarioService.findOne(+id);
-    }
-    update(id, updateMovimientosInventarioDto) {
-        return this.movimientosInventarioService.update(+id, updateMovimientosInventarioDto);
-    }
-    remove(id) {
-        return this.movimientosInventarioService.remove(+id);
+        return this.movimientosService.findOne(id);
     }
 };
 exports.MovimientosInventarioController = MovimientosInventarioController;
 __decorate([
     (0, common_1.Post)(),
     __param(0, (0, common_1.Body)()),
+    __param(1, (0, usuario_actual_decorator_1.UsuarioActual)()),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [create_movimientos_inventario_dto_1.CreateMovimientosInventarioDto]),
+    __metadata("design:paramtypes", [create_movimientos_inventario_dto_1.CreateMovimientoInventarioDto, Object]),
     __metadata("design:returntype", void 0)
 ], MovimientosInventarioController.prototype, "create", null);
 __decorate([
     (0, common_1.Get)(),
+    __param(0, (0, common_1.Query)('productoId', new common_1.ParseIntPipe({ optional: true }))),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", []),
+    __metadata("design:paramtypes", [Number]),
     __metadata("design:returntype", void 0)
 ], MovimientosInventarioController.prototype, "findAll", null);
 __decorate([
     (0, common_1.Get)(':id'),
-    __param(0, (0, common_1.Param)('id')),
+    __param(0, (0, common_1.Param)('id', common_1.ParseIntPipe)),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [String]),
+    __metadata("design:paramtypes", [Number]),
     __metadata("design:returntype", void 0)
 ], MovimientosInventarioController.prototype, "findOne", null);
-__decorate([
-    (0, common_1.Patch)(':id'),
-    __param(0, (0, common_1.Param)('id')),
-    __param(1, (0, common_1.Body)()),
-    __metadata("design:type", Function),
-    __metadata("design:paramtypes", [String, update_movimientos_inventario_dto_1.UpdateMovimientosInventarioDto]),
-    __metadata("design:returntype", void 0)
-], MovimientosInventarioController.prototype, "update", null);
-__decorate([
-    (0, common_1.Delete)(':id'),
-    __param(0, (0, common_1.Param)('id')),
-    __metadata("design:type", Function),
-    __metadata("design:paramtypes", [String]),
-    __metadata("design:returntype", void 0)
-], MovimientosInventarioController.prototype, "remove", null);
 exports.MovimientosInventarioController = MovimientosInventarioController = __decorate([
+    (0, roles_decorator_1.Roles)('encargado', 'lider'),
     (0, common_1.Controller)('movimientos-inventario'),
     __metadata("design:paramtypes", [movimientos_inventario_service_1.MovimientosInventarioService])
 ], MovimientosInventarioController);

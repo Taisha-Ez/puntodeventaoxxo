@@ -1,1 +1,1 @@
-{"version":3,"file":"update-caja.dto.js","sourceRoot":"","sources":["../../../src/cajas/dto/update-caja.dto.ts"],"names":[],"mappings":";;;AAAA,uDAAmD;AACnD,uDAAkD;AAElD,MAAa,aAAc,SAAQ,IAAA,0BAAW,EAAC,+BAAa,CAAC;CAAG;AAAhE,sCAAgE"}
+{"version":3,"file":"update-caja.dto.js","sourceRoot":"","sources":["../../../src/cajas/dto/update-caja.dto.ts"],"names":[],"mappings":";;;;;;;;;;;;AAAA,uDAAmD;AACnD,qDAAwD;AACxD,uDAAkD;AAElD,MAAa,aAAc,SAAQ,IAAA,0BAAW,EAAC,+BAAa,CAAC;IAG3D,MAAM,CAAW;CAClB;AAJD,sCAIC;AADC;IAFC,IAAA,4BAAU,GAAE;IACZ,IAAA,2BAAS,GAAE;;6CACK"}

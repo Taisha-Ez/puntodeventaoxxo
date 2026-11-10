@@ -17,29 +17,31 @@ const common_1 = require("@nestjs/common");
 const proveedores_service_1 = require("./proveedores.service");
 const create_proveedore_dto_1 = require("./dto/create-proveedore.dto");
 const update_proveedore_dto_1 = require("./dto/update-proveedore.dto");
+const roles_decorator_1 = require("../auth/decorators/roles.decorator");
 let ProveedoresController = class ProveedoresController {
     proveedoresService;
     constructor(proveedoresService) {
         this.proveedoresService = proveedoresService;
     }
-    create(createProveedoreDto) {
-        return this.proveedoresService.create(createProveedoreDto);
+    create(dto) {
+        return this.proveedoresService.create(dto);
     }
     findAll() {
         return this.proveedoresService.findAll();
     }
     findOne(id) {
-        return this.proveedoresService.findOne(+id);
+        return this.proveedoresService.findOne(id);
     }
-    update(id, updateProveedoreDto) {
-        return this.proveedoresService.update(+id, updateProveedoreDto);
+    update(id, dto) {
+        return this.proveedoresService.update(id, dto);
     }
     remove(id) {
-        return this.proveedoresService.remove(+id);
+        return this.proveedoresService.remove(id);
     }
 };
 exports.ProveedoresController = ProveedoresController;
 __decorate([
+    (0, roles_decorator_1.Roles)('lider'),
     (0, common_1.Post)(),
     __param(0, (0, common_1.Body)()),
     __metadata("design:type", Function),
@@ -47,31 +49,35 @@ __decorate([
     __metadata("design:returntype", void 0)
 ], ProveedoresController.prototype, "create", null);
 __decorate([
+    (0, roles_decorator_1.Roles)('encargado', 'lider'),
     (0, common_1.Get)(),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", []),
     __metadata("design:returntype", void 0)
 ], ProveedoresController.prototype, "findAll", null);
 __decorate([
+    (0, roles_decorator_1.Roles)('encargado', 'lider'),
     (0, common_1.Get)(':id'),
-    __param(0, (0, common_1.Param)('id')),
+    __param(0, (0, common_1.Param)('id', common_1.ParseIntPipe)),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [String]),
+    __metadata("design:paramtypes", [Number]),
     __metadata("design:returntype", void 0)
 ], ProveedoresController.prototype, "findOne", null);
 __decorate([
+    (0, roles_decorator_1.Roles)('lider'),
     (0, common_1.Patch)(':id'),
-    __param(0, (0, common_1.Param)('id')),
+    __param(0, (0, common_1.Param)('id', common_1.ParseIntPipe)),
     __param(1, (0, common_1.Body)()),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [String, update_proveedore_dto_1.UpdateProveedoreDto]),
+    __metadata("design:paramtypes", [Number, update_proveedore_dto_1.UpdateProveedorDto]),
     __metadata("design:returntype", void 0)
 ], ProveedoresController.prototype, "update", null);
 __decorate([
+    (0, roles_decorator_1.Roles)('lider'),
     (0, common_1.Delete)(':id'),
-    __param(0, (0, common_1.Param)('id')),
+    __param(0, (0, common_1.Param)('id', common_1.ParseIntPipe)),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [String]),
+    __metadata("design:paramtypes", [Number]),
     __metadata("design:returntype", void 0)
 ], ProveedoresController.prototype, "remove", null);
 exports.ProveedoresController = ProveedoresController = __decorate([

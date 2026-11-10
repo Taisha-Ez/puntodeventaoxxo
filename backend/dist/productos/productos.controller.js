@@ -17,29 +17,37 @@ const common_1 = require("@nestjs/common");
 const productos_service_1 = require("./productos.service");
 const create_producto_dto_1 = require("./dto/create-producto.dto");
 const update_producto_dto_1 = require("./dto/update-producto.dto");
+const roles_decorator_1 = require("../auth/decorators/roles.decorator");
 let ProductosController = class ProductosController {
     productosService;
     constructor(productosService) {
         this.productosService = productosService;
     }
-    create(createProductoDto) {
-        return this.productosService.create(createProductoDto);
+    create(dto) {
+        return this.productosService.create(dto);
     }
-    findAll() {
-        return this.productosService.findAll();
+    findAll(buscar) {
+        return this.productosService.findAll(buscar);
+    }
+    findByCodigo(codigo) {
+        return this.productosService.findByCodigo(codigo);
+    }
+    findStockBajo() {
+        return this.productosService.findStockBajo();
     }
     findOne(id) {
-        return this.productosService.findOne(+id);
+        return this.productosService.findOne(id);
     }
-    update(id, updateProductoDto) {
-        return this.productosService.update(+id, updateProductoDto);
+    update(id, dto) {
+        return this.productosService.update(id, dto);
     }
     remove(id) {
-        return this.productosService.remove(+id);
+        return this.productosService.remove(id);
     }
 };
 exports.ProductosController = ProductosController;
 __decorate([
+    (0, roles_decorator_1.Roles)('encargado', 'lider'),
     (0, common_1.Post)(),
     __param(0, (0, common_1.Body)()),
     __metadata("design:type", Function),
@@ -48,30 +56,47 @@ __decorate([
 ], ProductosController.prototype, "create", null);
 __decorate([
     (0, common_1.Get)(),
+    __param(0, (0, common_1.Query)('buscar')),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", []),
+    __metadata("design:paramtypes", [String]),
     __metadata("design:returntype", void 0)
 ], ProductosController.prototype, "findAll", null);
 __decorate([
-    (0, common_1.Get)(':id'),
-    __param(0, (0, common_1.Param)('id')),
+    (0, common_1.Get)('codigo/:codigo'),
+    __param(0, (0, common_1.Param)('codigo')),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [String]),
+    __metadata("design:returntype", void 0)
+], ProductosController.prototype, "findByCodigo", null);
+__decorate([
+    (0, roles_decorator_1.Roles)('encargado', 'lider'),
+    (0, common_1.Get)('stock-bajo'),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", []),
+    __metadata("design:returntype", void 0)
+], ProductosController.prototype, "findStockBajo", null);
+__decorate([
+    (0, common_1.Get)(':id'),
+    __param(0, (0, common_1.Param)('id', common_1.ParseIntPipe)),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Number]),
     __metadata("design:returntype", void 0)
 ], ProductosController.prototype, "findOne", null);
 __decorate([
+    (0, roles_decorator_1.Roles)('encargado', 'lider'),
     (0, common_1.Patch)(':id'),
-    __param(0, (0, common_1.Param)('id')),
+    __param(0, (0, common_1.Param)('id', common_1.ParseIntPipe)),
     __param(1, (0, common_1.Body)()),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [String, update_producto_dto_1.UpdateProductoDto]),
+    __metadata("design:paramtypes", [Number, update_producto_dto_1.UpdateProductoDto]),
     __metadata("design:returntype", void 0)
 ], ProductosController.prototype, "update", null);
 __decorate([
+    (0, roles_decorator_1.Roles)('encargado', 'lider'),
     (0, common_1.Delete)(':id'),
-    __param(0, (0, common_1.Param)('id')),
+    __param(0, (0, common_1.Param)('id', common_1.ParseIntPipe)),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [String]),
+    __metadata("design:paramtypes", [Number]),
     __metadata("design:returntype", void 0)
 ], ProductosController.prototype, "remove", null);
 exports.ProductosController = ProductosController = __decorate([
