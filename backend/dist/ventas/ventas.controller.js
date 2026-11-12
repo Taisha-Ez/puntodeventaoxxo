@@ -16,64 +16,70 @@ exports.VentasController = void 0;
 const common_1 = require("@nestjs/common");
 const ventas_service_1 = require("./ventas.service");
 const create_venta_dto_1 = require("./dto/create-venta.dto");
-const update_venta_dto_1 = require("./dto/update-venta.dto");
+const roles_decorator_1 = require("../auth/decorators/roles.decorator");
+const usuario_actual_decorator_1 = require("../auth/decorators/usuario-actual.decorator");
 let VentasController = class VentasController {
     ventasService;
     constructor(ventasService) {
         this.ventasService = ventasService;
     }
-    create(createVentaDto) {
-        return this.ventasService.create(createVentaDto);
+    create(dto, usuario) {
+        return this.ventasService.create(dto, usuario.id);
     }
-    findAll() {
-        return this.ventasService.findAll();
+    miTurno(usuario) {
+        return this.ventasService.miTurno(usuario.id);
+    }
+    findAll(turnoId, fecha) {
+        return this.ventasService.findAll(turnoId, fecha);
     }
     findOne(id) {
-        return this.ventasService.findOne(+id);
+        return this.ventasService.findOne(id);
     }
-    update(id, updateVentaDto) {
-        return this.ventasService.update(+id, updateVentaDto);
-    }
-    remove(id) {
-        return this.ventasService.remove(+id);
+    cancelar(id, usuario) {
+        return this.ventasService.cancelar(id, usuario.id);
     }
 };
 exports.VentasController = VentasController;
 __decorate([
     (0, common_1.Post)(),
     __param(0, (0, common_1.Body)()),
+    __param(1, (0, usuario_actual_decorator_1.UsuarioActual)()),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [create_venta_dto_1.CreateVentaDto]),
+    __metadata("design:paramtypes", [create_venta_dto_1.CreateVentaDto, Object]),
     __metadata("design:returntype", void 0)
 ], VentasController.prototype, "create", null);
 __decorate([
-    (0, common_1.Get)(),
+    (0, common_1.Get)('mi-turno'),
+    __param(0, (0, usuario_actual_decorator_1.UsuarioActual)()),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", []),
+    __metadata("design:paramtypes", [Object]),
+    __metadata("design:returntype", void 0)
+], VentasController.prototype, "miTurno", null);
+__decorate([
+    (0, roles_decorator_1.Roles)('encargado', 'lider'),
+    (0, common_1.Get)(),
+    __param(0, (0, common_1.Query)('turnoId', new common_1.ParseIntPipe({ optional: true }))),
+    __param(1, (0, common_1.Query)('fecha')),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Number, String]),
     __metadata("design:returntype", void 0)
 ], VentasController.prototype, "findAll", null);
 __decorate([
     (0, common_1.Get)(':id'),
-    __param(0, (0, common_1.Param)('id')),
+    __param(0, (0, common_1.Param)('id', common_1.ParseIntPipe)),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [String]),
+    __metadata("design:paramtypes", [Number]),
     __metadata("design:returntype", void 0)
 ], VentasController.prototype, "findOne", null);
 __decorate([
-    (0, common_1.Patch)(':id'),
-    __param(0, (0, common_1.Param)('id')),
-    __param(1, (0, common_1.Body)()),
+    (0, roles_decorator_1.Roles)('encargado', 'lider'),
+    (0, common_1.Patch)(':id/cancelar'),
+    __param(0, (0, common_1.Param)('id', common_1.ParseIntPipe)),
+    __param(1, (0, usuario_actual_decorator_1.UsuarioActual)()),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [String, update_venta_dto_1.UpdateVentaDto]),
+    __metadata("design:paramtypes", [Number, Object]),
     __metadata("design:returntype", void 0)
-], VentasController.prototype, "update", null);
-__decorate([
-    (0, common_1.Delete)(':id'),
-    __param(0, (0, common_1.Param)('id')),
-    __metadata("design:type", Function),
-    __metadata("design:paramtypes", [String]),
-    __metadata("design:returntype", void 0)
-], VentasController.prototype, "remove", null);
+], VentasController.prototype, "cancelar", null);
 exports.VentasController = VentasController = __decorate([
     (0, common_1.Controller)('ventas'),
     __metadata("design:paramtypes", [ventas_service_1.VentasService])
