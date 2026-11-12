@@ -1,2 +1,4 @@
-export declare class CreateTurnosCajaDto {
+export declare class AbrirTurnoDto {
+    cajaId: number;
+    montoInicial: number;
 }
