@@ -6,6 +6,10 @@ import Login from './pages/Login'
 import Dashboard from './pages/Dashboard'
 import Categorias from './pages/Categorias'
 import Proveedores from './pages/Proveedores'
+import Productos from './pages/Productos'
+import Promociones from './pages/Promociones'
+import Inventario from './pages/Inventario'
+import Usuarios from './pages/Usuarios'
 
 export default function App() {
   return (
@@ -28,6 +32,31 @@ export default function App() {
               element={
                 <RutaProtegida roles={['encargado', 'lider']}>
                   <Proveedores />
+                </RutaProtegida>
+              }
+            />
+            <Route
+              path="productos"
+              element={
+                <RutaProtegida roles={['encargado', 'lider']}>
+                  <Productos />
+                </RutaProtegida>
+              }
+            />
+            <Route path="promociones" element={<Promociones />} />
+            <Route
+              path="inventario"
+              element={
+                <RutaProtegida roles={['encargado', 'lider']}>
+                  <Inventario />
+                </RutaProtegida>
+              }
+            />
+            <Route
+              path="usuarios"
+              element={
+                <RutaProtegida roles={['lider']}>
+                  <Usuarios />
                 </RutaProtegida>
               }
             />
