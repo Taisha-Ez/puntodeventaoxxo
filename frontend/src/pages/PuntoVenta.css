@@ -364,3 +364,6 @@
   .pos-cuerpo { grid-template-columns: 1fr; }
   .pos-menu { grid-template-columns: repeat(2, 1fr); }
 }
+
+.pos-exito { color: #1b7a34; margin: 6px 0 0; font-size: 14px; font-weight: 600; }
+.pos-formulario select { padding: 10px; font-size: 15px; border: 1px solid #ccc; border-radius: 6px; }

@@ -11,6 +11,11 @@ import Promociones from './pages/Promociones'
 import Inventario from './pages/Inventario'
 import Usuarios from './pages/Usuarios'
 import PuntoVenta from './pages/PuntoVenta'
+import Devoluciones from './pages/Devoluciones'
+import Compras from './pages/Compras'
+import Ventas from './pages/Ventas'
+import Turnos from './pages/Turnos'
+import Cajas from './pages/Cajas'
 
 export default function App() {
   return (
@@ -69,6 +74,46 @@ export default function App() {
               element={
                 <RutaProtegida roles={['lider']}>
                   <Usuarios />
+                </RutaProtegida>
+              }
+            />
+            <Route
+              path="devoluciones"
+              element={
+                <RutaProtegida roles={['encargado', 'lider']}>
+                  <Devoluciones />
+                </RutaProtegida>
+              }
+            />
+            <Route
+              path="compras"
+              element={
+                <RutaProtegida roles={['encargado', 'lider']}>
+                  <Compras />
+                </RutaProtegida>
+              }
+            />
+            <Route
+              path="ventas"
+              element={
+                <RutaProtegida roles={['encargado', 'lider']}>
+                  <Ventas />
+                </RutaProtegida>
+              }
+            />
+            <Route
+              path="turnos"
+              element={
+                <RutaProtegida roles={['encargado', 'lider']}>
+                  <Turnos />
+                </RutaProtegida>
+              }
+            />
+            <Route
+              path="cajas"
+              element={
+                <RutaProtegida roles={['lider']}>
+                  <Cajas />
                 </RutaProtegida>
               }
             />

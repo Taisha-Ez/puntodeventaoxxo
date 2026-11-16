@@ -9,6 +9,7 @@ const TITULOS = {
   corteZ: 'Corte Z (cerrar turno)',
   resultadoZ: 'Turno cerrado',
   tickets: 'Consulta de tickets',
+  devolucion: 'Devolución',
 }
 
 export default function Opciones({
@@ -28,6 +29,12 @@ export default function Opciones({
   const [montoFinal, setMontoFinal] = useState('')
   const [error, setError] = useState('')
   const [cargando, setCargando] = useState(false)
+  const [folio, setFolio] = useState('')
+  const [ventaDev, setVentaDev] = useState(null)
+  const [productoDev, setProductoDev] = useState('')
+  const [cantidadDev, setCantidadDev] = useState('1')
+  const [motivoDev, setMotivoDev] = useState('')
+  const [exito, setExito] = useState('')
 
   const esEncargado = ['encargado', 'lider'].includes(usuario.rol)
 
@@ -114,11 +121,80 @@ export default function Opciones({
     }
   }
 
+  function abrirDevolucion() {
+    setError('')
+    setExito('')
+    setFolio('')
+    setVentaDev(null)
+    setProductoDev('')
+    setCantidadDev('1')
+    setMotivoDev('')
+    setVista('devolucion')
+  }
+
+  async function buscarVentaDev(e) {
+    e.preventDefault()
+    setError('')
+    setExito('')
+    setVentaDev(null)
+    setCargando(true)
+    try {
+      const { data } = await cliente.get(`/ventas/${Number(folio)}`)
+      if (data.estado === 'CANCELADA') {
+        setError('Esa venta está cancelada, no se puede devolver')
+      } else {
+        setVentaDev(data)
+        const primero = data.detalles[0]
+        setProductoDev(primero ? String(idProducto(primero)) : '')
+      }
+    } catch (err) {
+      setError(mensajeError(err))
+    } finally {
+      setCargando(false)
+    }
+  }
+
+  function idProducto(detalle) {
+    return detalle.producto?.id ?? detalle.productoId
+  }
+
+  async function enviarDevolucion(e) {
+    e.preventDefault()
+    setError('')
+    setExito('')
+    setCargando(true)
+    try {
+      const { data } = await cliente.post('/devoluciones', {
+        ventaId: ventaDev.id,
+        productoId: Number(productoDev),
+        cantidad: Number(cantidadDev),
+        motivo: motivoDev.trim(),
+      })
+      const pendiente = data.estado
+        ? String(data.estado).toUpperCase().startsWith('PEND')
+        : !esEncargado
+      setExito(
+        pendiente
+          ? 'Devolución enviada. Un encargado debe autorizarla'
+          : 'Devolución registrada y autorizada'
+      )
+      setVentaDev(null)
+      setFolio('')
+      setMotivoDev('')
+      await onVentaCambiada()
+    } catch (err) {
+      setError(mensajeError(err))
+    } finally {
+      setCargando(false)
+    }
+  }
+
   const opciones = [
     { icono: '🏠', texto: 'Menú principal', accion: onMenuPrincipal },
     { icono: '✂️', texto: 'Corte X', accion: abrirCorteX },
     { icono: '🧮', texto: 'Corte Z', accion: abrirCorteZ },
     { icono: '🧾', texto: 'Consulta de tickets', accion: abrirTickets },
+    { icono: '↩️', texto: 'Devolución', accion: abrirDevolucion },
     ...(esEncargado
       ? [{ icono: '📋', texto: 'Inventario operativo', accion: onInventario }]
       : []),
@@ -141,6 +217,7 @@ export default function Opciones({
         </div>
 
         {error && <p className="pos-aviso">{error}</p>}
+        {exito && <p className="pos-exito">{exito}</p>}
         {cargando && <p>Cargando...</p>}
 
         {vista === 'menu' && (
@@ -236,6 +313,65 @@ export default function Opciones({
             </div>
             <button className="pos-btn-principal" onClick={onTurnoCerrado}>
               Terminar
+            </button>
+          </div>
+        )}
+
+        {vista === 'devolucion' && (
+          <div>
+            <form onSubmit={buscarVentaDev} className="pos-formulario">
+              <label>Número de ticket</label>
+              <input
+                type="number"
+                min="1"
+                placeholder="Ej. 15"
+                value={folio}
+                onChange={(e) => setFolio(e.target.value)}
+                required
+                autoFocus
+              />
+              <button type="submit" className="pos-btn-sec" disabled={cargando}>
+                Buscar venta
+              </button>
+            </form>
+
+            {ventaDev && (
+              <form onSubmit={enviarDevolucion} className="pos-formulario" style={{ marginTop: 14 }}>
+                <p>
+                  Ticket #{ventaDev.id} · {fechaHora(ventaDev.fecha)} · Total {dinero(ventaDev.total)}
+                </p>
+                <label>Producto a devolver</label>
+                <select value={productoDev} onChange={(e) => setProductoDev(e.target.value)}>
+                  {ventaDev.detalles.map((d) => (
+                    <option key={d.id} value={idProducto(d)}>
+                      {d.cantidad} x {d.producto.nombre} ({dinero(d.subtotal)})
+                    </option>
+                  ))}
+                </select>
+                <label>Cantidad</label>
+                <input
+                  type="number"
+                  min="1"
+                  value={cantidadDev}
+                  onChange={(e) => setCantidadDev(e.target.value)}
+                  required
+                />
+                <label>Motivo</label>
+                <input
+                  type="text"
+                  placeholder="Ej. Producto en mal estado"
+                  value={motivoDev}
+                  onChange={(e) => setMotivoDev(e.target.value)}
+                  required
+                />
+                <button type="submit" className="pos-btn-principal" disabled={cargando}>
+                  Registrar devolución
+                </button>
+              </form>
+            )}
+
+            <button className="pos-btn-sec" style={{ marginTop: 10 }} onClick={() => setVista('menu')}>
+              ← Volver
             </button>
           </div>
         )}
