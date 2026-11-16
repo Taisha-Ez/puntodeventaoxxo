@@ -1,13 +1,17 @@
 import { NavLink, Outlet, useNavigate } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext'
 
+const TODOS = ['ayudante', 'encargado', 'lider']
+const ADMIN = ['encargado', 'lider']
+
 const MENU = [
-  { ruta: '/', texto: 'Inicio', roles: ['ayudante', 'encargado', 'lider'] },
-  { ruta: '/productos', texto: 'Productos', roles: ['encargado', 'lider'] },
-  { ruta: '/categorias', texto: 'Categorías', roles: ['ayudante', 'encargado', 'lider'] },
-  { ruta: '/proveedores', texto: 'Proveedores', roles: ['encargado', 'lider'] },
-  { ruta: '/promociones', texto: 'Promociones', roles: ['ayudante', 'encargado', 'lider'] },
-  { ruta: '/inventario', texto: 'Inventario', roles: ['encargado', 'lider'] },
+  { ruta: '/', texto: 'Inicio', roles: TODOS },
+  { ruta: '/pos', texto: 'Punto de venta', roles: TODOS },
+  { ruta: '/productos', texto: 'Productos', roles: ADMIN },
+  { ruta: '/categorias', texto: 'Categorías', roles: TODOS },
+  { ruta: '/proveedores', texto: 'Proveedores', roles: ADMIN },
+  { ruta: '/promociones', texto: 'Promociones', roles: TODOS },
+  { ruta: '/inventario', texto: 'Inventario', roles: ADMIN },
   { ruta: '/usuarios', texto: 'Usuarios', roles: ['lider'] },
 ]
 
@@ -23,11 +27,11 @@ export default function Layout() {
   return (
     <div className="layout">
       <aside className="menu">
-        <h2>Punto de venta</h2>
+        <h2>Oxxo</h2>
         <nav>
-          {MENU.filter((item) => item.roles.includes(usuario.rol)).map((item) => (
-            <NavLink key={item.ruta} to={item.ruta} end={item.ruta === '/'}>
-              {item.texto}
+          {MENU.filter((i) => i.roles.includes(usuario.rol)).map((i) => (
+            <NavLink key={i.ruta} to={i.ruta} end={i.ruta === '/'}>
+              {i.texto}
             </NavLink>
           ))}
         </nav>
