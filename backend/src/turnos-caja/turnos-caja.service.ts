@@ -1,10 +1,11 @@
 import { BadRequestException, ConflictException, Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { DataSource, Repository } from 'typeorm';
+import { Between, DataSource, IsNull, MoreThanOrEqual, Not, Repository } from 'typeorm';
 import { EstadoTurno, TurnoCaja } from './entities/turnos-caja.entity';
 import { Caja } from '../cajas/entities/caja.entity';
 import { EstadoVenta, Venta } from '../ventas/entities/venta.entity';
 import { PagoVenta } from '../ventas/entities/pago-venta.entity';
+import { Devolucion } from '../devoluciones/entities/devolucione.entity';
 import { AbrirTurnoDto } from './dto/create-turnos-caja.dto';
 import { CerrarTurnoDto } from './dto/update-turnos-caja.dto';
 import { redondear } from '../common/utils/redondear';
@@ -105,11 +106,51 @@ export class TurnosCajaService {
       .getRawOne<{ efectivo: string }>();
  
     const efectivoVentas = redondear(Number(efectivo?.efectivo ?? 0));
+    const totalVendido = redondear(Number(ventas?.totalVendido ?? 0));
+    const { numDevoluciones, totalDevoluciones } = await this.calcularDevoluciones(turno);
     return {
       numVentas: Number(ventas?.numVentas ?? 0),
-      totalVendido: redondear(Number(ventas?.totalVendido ?? 0)),
+      totalVendido,
       efectivoVentas,
-      efectivoEsperado: redondear(turno.montoInicial + efectivoVentas),
+      numDevoluciones,
+      totalDevoluciones,
+      totalNeto: redondear(totalVendido - totalDevoluciones),
+      // Las devoluciones se reembolsan en efectivo, así que salen de la caja
+      efectivoEsperado: redondear(turno.montoInicial + efectivoVentas - totalDevoluciones),
     };
+  }
+
+  // Devoluciones autorizadas que registró el cajero del turno mientras estuvo abierto.
+  // Se reembolsa lo que se cobró por pieza (ya con descuento) por las piezas devueltas.
+  private async calcularDevoluciones(turno: TurnoCaja) {
+    const conUsuario = await this.turnoRepo.findOne({
+      where: { id: turno.id },
+      relations: { usuario: true },
+    });
+    if (!conUsuario) return { numDevoluciones: 0, totalDevoluciones: 0 };
+
+    const devoluciones = await this.dataSource.getRepository(Devolucion).find({
+      where: {
+        usuario: { id: conUsuario.usuario.id },
+        autorizadaPor: Not(IsNull()),
+        fecha: turno.fechaCierre
+          ? Between(turno.fechaApertura, turno.fechaCierre)
+          : MoreThanOrEqual(turno.fechaApertura),
+      },
+      relations: { producto: true, venta: { detalles: { producto: true } } },
+    });
+
+    let numDevoluciones = 0;
+    let totalDevoluciones = 0;
+    for (const d of devoluciones) {
+      if (d.venta.estado !== EstadoVenta.PAGADA) continue;
+      const renglones = d.venta.detalles.filter((r) => r.producto.id === d.producto.id);
+      const piezas = renglones.reduce((suma, r) => suma + r.cantidad, 0);
+      if (piezas === 0) continue;
+      const cobrado = renglones.reduce((suma, r) => suma + Number(r.subtotal), 0);
+      totalDevoluciones += (cobrado / piezas) * d.cantidad;
+      numDevoluciones++;
+    }
+    return { numDevoluciones, totalDevoluciones: redondear(totalDevoluciones) };
   }
 }
