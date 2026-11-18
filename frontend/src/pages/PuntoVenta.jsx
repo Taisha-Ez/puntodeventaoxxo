@@ -263,6 +263,9 @@ export default function PuntoVenta() {
     )
   }
 
+  const hayMarcado = carrito.some((l) => l.producto.id === seleccion)
+  const claseAccion = hayMarcado ? 'pos-boton pos-amarillo' : 'pos-boton pos-gris'
+
   const promo = promos.length > 0 ? promos[promoIdx % promos.length] : null
 
   return (
@@ -372,10 +375,10 @@ export default function PuntoVenta() {
       </div>
 
       <div className="pos-botones">
-        <button className="pos-boton pos-gris" onClick={repetir} disabled={carrito.length === 0}>
+        <button className={claseAccion} onClick={repetir} disabled={carrito.length === 0}>
           Repetir
         </button>
-        <button className="pos-boton pos-gris" onClick={eliminar} disabled={carrito.length === 0}>
+        <button className={claseAccion} onClick={eliminar} disabled={carrito.length === 0}>
           Eliminar
         </button>
         {categorias.slice(0, 4).map((c) => (

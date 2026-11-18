@@ -189,6 +189,15 @@ export default function Opciones({
     }
   }
 
+  function cerrarSesion() {
+    setError('')
+    if (hayVentaEnCurso) {
+      setError('Termina o elimina la venta en curso antes de cerrar sesión')
+      return
+    }
+    onLogout()
+  }
+
   const opciones = [
     { icono: '🏠', texto: 'Menú principal', accion: onMenuPrincipal },
     { icono: '✂️', texto: 'Corte X', accion: abrirCorteX },
@@ -198,7 +207,7 @@ export default function Opciones({
     ...(esEncargado
       ? [{ icono: '📋', texto: 'Inventario operativo', accion: onInventario }]
       : []),
-    { icono: '👤', texto: 'Cerrar sesión', accion: onLogout },
+    { icono: '👤', texto: 'Cerrar sesión', accion: cerrarSesion },
   ]
 
   const resumen = datos?.resumen
@@ -248,6 +257,14 @@ export default function Opciones({
                 <strong>{dinero(resumen.totalVendido)}</strong>
               </p>
               <p>
+                <span>Devoluciones ({resumen.numDevoluciones ?? 0})</span>
+                <strong>-{dinero(resumen.totalDevoluciones ?? 0)}</strong>
+              </p>
+              <p>
+                <span>Total neto</span>
+                <strong>{dinero(resumen.totalNeto ?? resumen.totalVendido)}</strong>
+              </p>
+              <p>
                 <span>Efectivo por ventas</span>
                 <strong>{dinero(resumen.efectivoVentas)}</strong>
               </p>
@@ -295,6 +312,14 @@ export default function Opciones({
               <p>
                 <span>Total vendido</span>
                 <strong>{dinero(resumen.totalVendido)}</strong>
+              </p>
+              <p>
+                <span>Devoluciones ({resumen.numDevoluciones ?? 0})</span>
+                <strong>-{dinero(resumen.totalDevoluciones ?? 0)}</strong>
+              </p>
+              <p>
+                <span>Total neto</span>
+                <strong>{dinero(resumen.totalNeto ?? resumen.totalVendido)}</strong>
               </p>
               <p>
                 <span>Efectivo esperado</span>

@@ -10,6 +10,23 @@ function mensajeError(err) {
   return mensaje || 'No se pudo conectar con el servidor'
 }
 
+// Mismas reglas que valida el backend. Regresa la lista de lo que falta.
+function validar(form, editando) {
+  const faltas = []
+  const usuario = form.usuario.trim()
+  if (!form.nombre.trim()) faltas.push('El nombre es obligatorio')
+  if (usuario.length < 3) faltas.push('El usuario debe tener al menos 3 caracteres')
+  if (usuario && !/^[a-zA-Z0-9._-]+$/.test(usuario)) {
+    faltas.push('El usuario solo puede tener letras, números, punto, guion y guion bajo')
+  }
+  if (!editando && !form.password) faltas.push('La contraseña es obligatoria')
+  if (form.password && form.password.length < 6) {
+    faltas.push('La contraseña debe tener al menos 6 caracteres')
+  }
+  if (!form.rolId) faltas.push('Selecciona un rol')
+  return faltas
+}
+
 export default function Usuarios() {
   const { usuario: actual } = useAuth()
 
@@ -54,6 +71,12 @@ export default function Usuarios() {
   async function guardar(e) {
     e.preventDefault()
     setError('')
+    const faltas = validar(form, editandoId)
+    if (faltas.length > 0) {
+      setError(faltas.join(', '))
+      window.alert('No cumple los requisitos mínimos:\n\n- ' + faltas.join('\n- '))
+      return
+    }
     const datos = {
       nombre: form.nombre.trim(),
       usuario: form.usuario.trim(),
@@ -117,7 +140,7 @@ export default function Usuarios() {
     <div>
       <h1>Usuarios</h1>
 
-      <form onSubmit={guardar} className="formulario">
+      <form onSubmit={guardar} className="formulario" noValidate>
         <input
           placeholder="Nombre completo *"
           value={form.nombre}

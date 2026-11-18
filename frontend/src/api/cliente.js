@@ -1,7 +1,7 @@
 import axios from 'axios'
 
 const cliente = axios.create({
-  baseURL: 'http://localhost:3000',
+  baseURL: 'http://192.168.1.65:3000',
 })
 
 cliente.interceptors.request.use((config) => {
@@ -18,7 +18,7 @@ cliente.interceptors.response.use(
     const esLogin = error.config?.url === '/auth/login'
     if (error.response?.status === 401 && !esLogin) {
       localStorage.removeItem('token')
-      localStorage.removeItem('usuario')
+      localStorage.removeItem('nombre')
       window.location.href = '/login'
     }
     return Promise.reject(error)
