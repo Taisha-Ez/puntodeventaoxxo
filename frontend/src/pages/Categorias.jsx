@@ -13,15 +13,28 @@ export default function Categorias() {
   const esLider = usuario.rol === 'lider'
 
   const [categorias, setCategorias] = useState([])
+  const [productos, setProductos] = useState([])
+  const [desactivadas, setDesactivadas] = useState([])
   const [nombre, setNombre] = useState('')
   const [editandoId, setEditandoId] = useState(null)
   const [error, setError] = useState('')
   const [cargando, setCargando] = useState(true)
 
+  function contarProductos(categoria) {
+    return productos.filter((p) => p.categoria?.id === categoria.id).length
+  }
+
   async function cargar() {
     try {
-      const { data } = await cliente.get('/categorias')
-      setCategorias(data)
+      const [cats, prods, inactivas] = await Promise.all([
+        cliente.get('/categorias'),
+        cliente.get('/productos'),
+        // Solo el líder puede ver y reactivar las desactivadas
+        esLider ? cliente.get('/categorias/desactivadas') : Promise.resolve({ data: [] }),
+      ])
+      setCategorias(cats.data)
+      setProductos(prods.data)
+      setDesactivadas(inactivas.data)
     } catch (err) {
       setError(mensajeError(err))
     } finally {
@@ -59,6 +72,16 @@ export default function Categorias() {
   function cancelar() {
     setEditandoId(null)
     setNombre('')
+  }
+
+  async function reactivar(categoria) {
+    setError('')
+    try {
+      await cliente.patch(`/categorias/${categoria.id}/reactivar`)
+      await cargar()
+    } catch (err) {
+      setError(mensajeError(err))
+    }
   }
 
   async function desactivar(categoria) {
@@ -108,29 +131,67 @@ export default function Categorias() {
             <tr>
               <th>ID</th>
               <th>Nombre</th>
+              <th>Productos</th>
               {esLider && <th>Acciones</th>}
             </tr>
           </thead>
           <tbody>
             {categorias.length === 0 && (
               <tr>
-                <td colSpan={esLider ? 3 : 2}>No hay categorías</td>
+                <td colSpan={esLider ? 4 : 3}>No hay categorías</td>
               </tr>
             )}
             {categorias.map((c) => (
               <tr key={c.id}>
                 <td>{c.id}</td>
                 <td>{c.nombre}</td>
+                <td>{contarProductos(c)}</td>
                 {esLider && (
                   <td>
                     <button onClick={() => editar(c)}>Editar</button>{' '}
-                    <button onClick={() => desactivar(c)}>Desactivar</button>
+                    <button
+                      onClick={() => desactivar(c)}
+                      disabled={contarProductos(c) > 0}
+                      title={
+                        contarProductos(c) > 0
+                          ? 'No se puede eliminar: la categoría tiene productos'
+                          : ''
+                      }
+                    >
+                      Desactivar
+                    </button>
                   </td>
                 )}
               </tr>
             ))}
           </tbody>
         </table>
+      )}
+
+      {esLider && desactivadas.length > 0 && (
+        <>
+          <h2>Categorías desactivadas</h2>
+          <table className="tabla">
+            <thead>
+              <tr>
+                <th>ID</th>
+                <th>Nombre</th>
+                <th>Acciones</th>
+              </tr>
+            </thead>
+            <tbody>
+              {desactivadas.map((c) => (
+                <tr key={c.id} className="fila-inactiva">
+                  <td>{c.id}</td>
+                  <td>{c.nombre}</td>
+                  <td>
+                    <button onClick={() => reactivar(c)}>Reactivar</button>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </>
       )}
     </div>
   )

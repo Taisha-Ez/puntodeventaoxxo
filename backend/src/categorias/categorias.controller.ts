@@ -20,6 +20,12 @@ export class CategoriasController {
     return this.categoriasService.findAll();
   }
 
+  @Roles('lider')
+  @Get('desactivadas')
+  findDesactivadas() {
+    return this.categoriasService.findDesactivadas();
+  }
+
   @Get(':id')
   findOne(@Param('id', ParseIntPipe) id: number) {
     return this.categoriasService.findOne(id);
@@ -29,6 +35,12 @@ export class CategoriasController {
   @Patch(':id')
   update(@Param('id', ParseIntPipe) id: number, @Body() dto: UpdateCategoriaDto) {
     return this.categoriasService.update(id, dto);
+  }
+
+  @Roles('lider')
+  @Patch(':id/reactivar')
+  reactivar(@Param('id', ParseIntPipe) id: number) {
+    return this.categoriasService.reactivar(id);
   }
 
   @Roles('lider')

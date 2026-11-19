@@ -367,3 +367,29 @@
 
 .pos-exito { color: #1b7a34; margin: 6px 0 0; font-size: 14px; font-weight: 600; }
 .pos-formulario select { padding: 10px; font-size: 15px; border: 1px solid #ccc; border-radius: 6px; }
+
+/* Selector de categorías */
+.pos-cat-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+  gap: 10px;
+}
+.pos-cat {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  min-height: 80px;
+  padding: 12px;
+  border: 0;
+  border-radius: 6px;
+  background: #f5b800;
+  color: #333;
+  font-size: 15px;
+  font-weight: bold;
+  cursor: pointer;
+}
+.pos-cat:hover { background: #e0a800; }
+.pos-cat small { font-weight: normal; font-size: 12px; }
+.pos-rojo { background: #c8102e; color: #fff; }

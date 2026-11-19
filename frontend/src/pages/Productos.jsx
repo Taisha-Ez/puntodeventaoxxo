@@ -45,14 +45,19 @@ export default function Productos() {
   const [soloBajo, setSoloBajo] = useState(false)
   const [error, setError] = useState('')
   const [cargando, setCargando] = useState(true)
+  const [desactivados, setDesactivados] = useState([])
 
   async function cargarProductos() {
     try {
       const url = soloBajo
         ? '/productos/stock-bajo'
         : `/productos?buscar=${encodeURIComponent(filtro)}`
-      const { data } = await cliente.get(url)
-      setProductos(data)
+      const [lista, inactivos] = await Promise.all([
+        cliente.get(url),
+        cliente.get('/productos/desactivados'),
+      ])
+      setProductos(lista.data)
+      setDesactivados(inactivos.data)
     } catch (err) {
       setError(mensajeError(err))
     } finally {
@@ -122,6 +127,16 @@ export default function Productos() {
   function cancelar() {
     setEditandoId(null)
     setForm(VACIO)
+  }
+
+  async function reactivar(p) {
+    setError('')
+    try {
+      await cliente.patch(`/productos/${p.id}/reactivar`)
+      await cargarProductos()
+    } catch (err) {
+      setError(mensajeError(err))
+    }
   }
 
   async function desactivar(p) {
@@ -294,6 +309,50 @@ export default function Productos() {
             ))}
           </tbody>
         </table>
+      )}
+
+      {desactivados.length > 0 && (
+        <>
+          <h2>Productos desactivados</h2>
+          <table className="tabla">
+            <thead>
+              <tr>
+                <th>Código</th>
+                <th>Nombre</th>
+                <th>Categoría</th>
+                <th>Venta</th>
+                <th>Stock</th>
+                <th>Acciones</th>
+              </tr>
+            </thead>
+            <tbody>
+              {desactivados.map((p) => {
+                const categoriaInactiva = p.categoria && !p.categoria.activo
+                return (
+                  <tr key={p.id} className="fila-inactiva">
+                    <td>{p.codigoBarras}</td>
+                    <td>{p.nombre}</td>
+                    <td>
+                      {p.categoria?.nombre}
+                      {categoriaInactiva && ' (desactivada)'}
+                    </td>
+                    <td>{dinero(p.precioVenta)}</td>
+                    <td>{p.stockActual}</td>
+                    <td>
+                      <button
+                        onClick={() => reactivar(p)}
+                        disabled={categoriaInactiva}
+                        title={categoriaInactiva ? 'Primero reactiva su categoría' : ''}
+                      >
+                        Reactivar
+                      </button>
+                    </td>
+                  </tr>
+                )
+              })}
+            </tbody>
+          </table>
+        </>
       )}
     </div>
   )

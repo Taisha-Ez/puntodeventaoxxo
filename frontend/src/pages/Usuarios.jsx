@@ -36,11 +36,16 @@ export default function Usuarios() {
   const [editandoId, setEditandoId] = useState(null)
   const [error, setError] = useState('')
   const [cargando, setCargando] = useState(true)
+  const [plantilla, setPlantilla] = useState([])
 
   async function cargarUsuarios() {
     try {
-      const { data } = await cliente.get('/usuarios')
-      setUsuarios(data)
+      const [lista, cupos] = await Promise.all([
+        cliente.get('/usuarios'),
+        cliente.get('/usuarios/plantilla'),
+      ])
+      setUsuarios(lista.data)
+      setPlantilla(cupos.data)
     } catch (err) {
       setError(mensajeError(err))
     } finally {
@@ -63,6 +68,18 @@ export default function Usuarios() {
     cargarRoles()
   }, [])
   /* eslint-enable react-hooks/exhaustive-deps, react-hooks/set-state-in-effect */
+
+  function cupoDe(nombreRol) {
+    return plantilla.find((p) => p.rol === nombreRol)
+  }
+
+  // Un rol está lleno si ya no hay lugares, salvo que el usuario que se edita ya ocupe ese lugar
+  function rolLleno(rol) {
+    const cupo = cupoDe(rol.nombre)
+    if (!cupo || cupo.disponibles > 0) return false
+    const editado = usuarios.find((u) => u.id === editandoId)
+    return !(editado && editado.activo && editado.rol?.id === rol.id)
+  }
 
   function cambiar(campo, valor) {
     setForm({ ...form, [campo]: valor })
@@ -176,8 +193,11 @@ export default function Usuarios() {
         >
           <option value="">Rol *</option>
           {roles.map((r) => (
-            <option key={r.id} value={r.id}>
+            <option key={r.id} value={r.id} disabled={rolLleno(r)}>
               {r.nombre}
+              {cupoDe(r.nombre) &&
+                ` (${cupoDe(r.nombre).activos}/${cupoDe(r.nombre).maximo})`}
+              {rolLleno(r) && ' - completo'}
             </option>
           ))}
         </select>
@@ -190,6 +210,21 @@ export default function Usuarios() {
           </button>
         )}
       </form>
+
+      {plantilla.length > 0 && (
+        <p className="plantilla">
+          <strong>Plantilla (usuarios activos):</strong>{' '}
+          {plantilla.map((p, i) => (
+            <span
+              key={p.rol}
+              style={{ color: p.disponibles === 0 ? '#c8102e' : 'inherit', fontWeight: 'bold' }}
+            >
+              {i > 0 && ' · '}
+              {p.rol}: {p.activos}/{p.maximo}
+            </span>
+          ))}
+        </p>
+      )}
 
       {error && <p className="error">{error}</p>}
 
@@ -224,7 +259,17 @@ export default function Usuarios() {
                     (u.activo ? (
                       <button onClick={() => desactivar(u)}>Desactivar</button>
                     ) : (
-                      <button onClick={() => reactivar(u)}>Reactivar</button>
+                      <button
+                        onClick={() => reactivar(u)}
+                        disabled={cupoDe(u.rol?.nombre)?.disponibles === 0}
+                        title={
+                          cupoDe(u.rol?.nombre)?.disponibles === 0
+                            ? 'La plantilla de este rol está completa'
+                            : ''
+                        }
+                      >
+                        Reactivar
+                      </button>
                     ))}
                 </td>
               </tr>
