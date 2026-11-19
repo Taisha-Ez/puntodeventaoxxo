@@ -92,6 +92,26 @@ export class ProductosService {
     return this.productoRepo.save(producto);
   }
  
+  findDesactivados() {
+    return this.productoRepo.find({
+      where: { activo: false },
+      relations: { categoria: true, proveedor: true },
+      order: { nombre: 'ASC' },
+    });
+  }
+
+  async reactivar(id: number) {
+    const producto = await this.findOne(id);
+    // No se puede reactivar si su categoría sigue desactivada
+    if (!producto.categoria.activo) {
+      throw new BadRequestException(
+        `No se puede reactivar "${producto.nombre}" porque su categoría "${producto.categoria.nombre}" está desactivada. Reactiva primero la categoría.`,
+      );
+    }
+    producto.activo = true;
+    return this.productoRepo.save(producto);
+  }
+
   async remove(id: number) {
     const producto = await this.findOne(id);
     producto.activo = false;

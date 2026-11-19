@@ -20,6 +20,19 @@ export class CajasController {
     return this.cajasService.findAll();
   }
  
+  // Activas e inactivas, para la pantalla de administración
+  @Roles('lider')
+  @Get('todas')
+  findTodas() {
+    return this.cajasService.findTodas();
+  }
+
+  // Cajas activas contra el máximo permitido
+  @Get('cupo')
+  cupo() {
+    return this.cajasService.cupo();
+  }
+
   @Get(':id')
   findOne(@Param('id', ParseIntPipe) id: number) {
     return this.cajasService.findOne(id);

@@ -22,6 +22,11 @@ export class UsuariosController {
     return this.usuariosService.findAll();
   }
  
+  @Get('plantilla')
+  plantilla() {
+    return this.usuariosService.plantilla();
+  }
+
   @Get(':id')
   findOne(@Param('id', ParseIntPipe) id: number) {
     return this.usuariosService.findOne(id);

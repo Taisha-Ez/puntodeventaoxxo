@@ -31,6 +31,12 @@ export class ProductosController {
     return this.productosService.findStockBajo();
   }
  
+  @Roles('encargado', 'lider')
+  @Get('desactivados')
+  findDesactivados() {
+    return this.productosService.findDesactivados();
+  }
+
   @Get(':id')
   findOne(@Param('id', ParseIntPipe) id: number) {
     return this.productosService.findOne(id);
@@ -42,6 +48,12 @@ export class ProductosController {
     return this.productosService.update(id, dto);
   }
  
+  @Roles('encargado', 'lider')
+  @Patch(':id/reactivar')
+  reactivar(@Param('id', ParseIntPipe) id: number) {
+    return this.productosService.reactivar(id);
+  }
+
   @Roles('encargado', 'lider')
   @Delete(':id')
   remove(@Param('id', ParseIntPipe) id: number) {

@@ -5,6 +5,7 @@ import cliente from '../api/cliente'
 import { useAuth } from '../context/AuthContext'
 import AbrirTurno from '../components/pos/AbrirTurno'
 import Buscador from '../components/pos/Buscador'
+import Categorias from '../components/pos/Categorias'
 import Cobro from '../components/pos/Cobro'
 import Opciones from '../components/pos/Opciones'
 import Ticket from '../components/pos/Ticket'
@@ -197,6 +198,11 @@ export default function PuntoVenta() {
     setModal('categoria')
   }
 
+  // Al cerrar los productos de una categoría se regresa a la lista de categorías
+  function cerrarCategoria() {
+    setModal('categorias')
+  }
+
   function irACobrar() {
     if (carrito.length === 0) {
       setAviso('Agrega al menos un artículo')
@@ -381,11 +387,9 @@ export default function PuntoVenta() {
         <button className={claseAccion} onClick={eliminar} disabled={carrito.length === 0}>
           Eliminar
         </button>
-        {categorias.slice(0, 4).map((c) => (
-          <button key={c.id} className="pos-boton pos-amarillo" onClick={() => abrirCategoria(c)}>
-            {c.nombre}
-          </button>
-        ))}
+        <button className="pos-boton pos-rojo" onClick={() => setModal('categorias')}>
+          ☰ Categorías
+        </button>
       </div>
 
       {modal === 'cobro' && (
@@ -412,6 +416,14 @@ export default function PuntoVenta() {
           titulo={categoriaSel.nombre}
           productos={productos.filter((p) => p.categoria?.id === categoriaSel.id)}
           onElegir={elegirDeLista}
+          onCerrar={cerrarCategoria}
+        />
+      )}
+      {modal === 'categorias' && (
+        <Categorias
+          categorias={categorias}
+          productos={productos}
+          onElegir={abrirCategoria}
           onCerrar={() => setModal(null)}
         />
       )}
