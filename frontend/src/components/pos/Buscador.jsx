@@ -6,7 +6,10 @@ export default function Buscador({ titulo, productos, onElegir, onCerrar }) {
   const [texto, setTexto] = useState('')
 
   const busqueda = texto.trim().toLowerCase()
-  const visibles = productos
+  // En una venta (con onElegir) no se muestran los productos sin stock.
+  // En "Consulta de precio" sí se muestran todos.
+  const disponibles = onElegir ? productos.filter((p) => p.stockActual > 0) : productos
+  const visibles = disponibles
     .filter(
       (p) =>
         !busqueda ||
@@ -34,13 +37,12 @@ export default function Buscador({ titulo, productos, onElegir, onCerrar }) {
         />
 
         <div className="pos-lista">
-          {visibles.length === 0 && <p>No hay productos</p>}
+          {visibles.length === 0 && <p>No hay productos con stock</p>}
           {visibles.map((p) => (
             <button
               key={p.id}
               className="pos-fila"
               onClick={onElegir ? () => onElegir(p) : undefined}
-              disabled={onElegir ? p.stockActual <= 0 : false}
             >
               <span>
                 {p.nombre}

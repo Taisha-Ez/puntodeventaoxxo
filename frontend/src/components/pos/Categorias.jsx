@@ -1,7 +1,8 @@
 // Cuadrícula con todas las categorías para elegir una rápido desde el POS
 export default function Categorias({ categorias, productos, onElegir, onCerrar }) {
+  // Solo cuenta los productos disponibles (con stock)
   function contar(categoria) {
-    return productos.filter((p) => p.categoria?.id === categoria.id).length
+    return productos.filter((p) => p.categoria?.id === categoria.id && p.stockActual > 0).length
   }
 
   return (
