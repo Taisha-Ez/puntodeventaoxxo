@@ -1,3 +1,4 @@
+import { Trim } from '../../common/decorators/trim.decorator';
 import { IsIn, IsInt, IsNotEmpty, IsString, MaxLength, NotEquals } from 'class-validator';
 import { TipoMovimiento } from '../entities/movimientos-inventario.entity';
  
@@ -18,6 +19,7 @@ export class CreateMovimientoInventarioDto {
   @NotEquals(0, { message: 'La cantidad no puede ser 0' })
   cantidad: number;
  
+  @Trim()
   @IsString()
   @IsNotEmpty({ message: 'Indica el motivo del movimiento' })
   @MaxLength(200)

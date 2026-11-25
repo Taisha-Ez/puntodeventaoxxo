@@ -44,15 +44,17 @@ export default function Login() {
         {!olvido ? (
           <form onSubmit={enviar} className="login-caja">
             <h1>Iniciar sesión</h1>
-            <label>Usuario</label>
+            <label htmlFor="login-usuario">Usuario</label>
             <input
+              id="login-usuario"
               value={nombreUsuario}
               onChange={(e) => setNombreUsuario(e.target.value)}
               required
               autoFocus
             />
-            <label>Contraseña</label>
+            <label htmlFor="login-password">Contraseña</label>
             <input
+              id="login-password"
               type="password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}

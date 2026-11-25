@@ -1,5 +1,5 @@
 import { Type } from 'class-transformer';
-import { ArrayNotEmpty, IsArray, IsInt, IsNumber, Min, ValidateNested } from 'class-validator';
+import { ArrayNotEmpty, IsArray, IsInt, IsNumber, Min, ValidateNested, Max } from 'class-validator';
  
 export class DetalleCompraDto {
   @IsInt()
@@ -12,6 +12,7 @@ export class DetalleCompraDto {
   // Lo que cobra el proveedor por pieza
   @IsNumber({ maxDecimalPlaces: 2 })
   @Min(0)
+  @Max(99999999.99, { message: 'El monto no puede ser mayor a 99,999,999.99' })
   costoUnitario: number;
 }
  

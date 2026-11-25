@@ -10,6 +10,7 @@ import { MetodoPago } from '../metodos-pago/entities/metodos-pago.entity';
 import { EstadoTurno, TurnoCaja } from '../turnos-caja/entities/turnos-caja.entity';
 import { MovimientoInventario, TipoMovimiento } from '../movimientos-inventario/entities/movimientos-inventario.entity';
 import { Devolucion } from '../devoluciones/entities/devolucione.entity';
+import { esFechaValida } from '../common/utils/fechas';
 import { CreateVentaDto } from './dto/create-venta.dto';
 import { redondear } from '../common/utils/redondear';
  
@@ -124,8 +125,8 @@ export class VentasService {
   findAll(turnoId?: number, fecha?: string) {
     let rangoFecha: FindOperator<Date> | undefined;
     if (fecha) {
+      if (!esFechaValida(fecha)) throw new BadRequestException('fecha debe tener formato AAAA-MM-DD');
       const inicio = new Date(`${fecha}T00:00:00`);
-      if (isNaN(inicio.getTime())) throw new BadRequestException('fecha debe tener formato AAAA-MM-DD');
       rangoFecha = Between(inicio, new Date(`${fecha}T23:59:59.999`));
     }
     return this.ventaRepo.find({

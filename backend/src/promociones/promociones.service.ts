@@ -15,11 +15,12 @@ export class PromocionesService {
  
   async create(dto: CreatePromocionDto) {
     const { productoIds, ...datos } = dto;
-    this.validarReglas(datos.tipo, datos.valor, datos.fechaInicio, datos.fechaFin);
+    const productos = await this.buscarProductos(productoIds);
+    this.validarReglas(datos.tipo, datos.valor, datos.fechaInicio, datos.fechaFin, productos);
  
     const promocion = this.promocionRepo.create({
       ...datos,
-      productos: await this.buscarProductos(productoIds),
+      productos,
     });
     return this.promocionRepo.save(promocion);
   }
@@ -48,10 +49,10 @@ export class PromocionesService {
     const { productoIds, ...datos } = dto;
  
     Object.assign(promocion, datos);
-    this.validarReglas(promocion.tipo, promocion.valor, promocion.fechaInicio, promocion.fechaFin);
- 
     // Si mandan productoIds, se reemplaza la lista completa de productos
     if (productoIds) promocion.productos = await this.buscarProductos(productoIds);
+    this.validarReglas(promocion.tipo, promocion.valor, promocion.fechaInicio, promocion.fechaFin, promocion.productos);
+ 
     return this.promocionRepo.save(promocion);
   }
  
@@ -62,7 +63,7 @@ export class PromocionesService {
     return { mensaje: 'Promoción desactivada' };
   }
  
-  private validarReglas(tipo: TipoPromocion, valor: number | undefined, inicio: string, fin: string) {
+  private validarReglas(tipo: TipoPromocion, valor: number | undefined, inicio: string, fin: string, productos: Producto[]) {
     if (fin < inicio) {
       throw new BadRequestException('La fecha de fin no puede ser anterior a la de inicio');
     }
@@ -71,6 +72,14 @@ export class PromocionesService {
     }
     if (tipo === TipoPromocion.PORCENTAJE && valor && valor > 100) {
       throw new BadRequestException('El porcentaje no puede ser mayor a 100');
+    }
+    if (tipo === TipoPromocion.PRECIO_ESPECIAL && valor) {
+      const caro = productos.find((p) => valor >= p.precioVenta);
+      if (caro) {
+        throw new BadRequestException(
+          `El precio especial debe ser menor al precio normal de "${caro.nombre}" ($${caro.precioVenta})`,
+        );
+      }
     }
   }
  

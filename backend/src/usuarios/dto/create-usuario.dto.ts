@@ -1,11 +1,14 @@
+import { Trim } from '../../common/decorators/trim.decorator';
 import { IsInt, IsNotEmpty, IsString, Matches, MaxLength, MinLength } from 'class-validator';
  
 export class CreateUsuarioDto {
+  @Trim()
   @IsString()
   @IsNotEmpty()
   @MaxLength(100)
   nombre: string;
  
+  @Trim()
   @IsString()
   @MinLength(3)
   @MaxLength(50)
