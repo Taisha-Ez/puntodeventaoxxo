@@ -1,12 +1,15 @@
+import { Trim } from '../../common/decorators/trim.decorator';
 import { IsEmail, IsNotEmpty, IsOptional, IsString, Length, MaxLength } from 'class-validator';
  
 export class CreateProveedoreDto {
+  @Trim()
   @IsString()
   @IsNotEmpty()
   @MaxLength(100)
   nombre: string;
  
   @IsOptional()
+  @Trim()
   @IsString()
   @MaxLength(20)
   telefono?: string;
@@ -17,6 +20,7 @@ export class CreateProveedoreDto {
   email?: string;
  
   @IsOptional()
+  @Trim()
   @IsString()
   @Length(12, 13, { message: 'El RFC debe tener 12 o 13 caracteres' })
   rfc?: string;

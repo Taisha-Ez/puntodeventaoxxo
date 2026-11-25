@@ -1,0 +1,5 @@
+import { Transform } from 'class-transformer';
+
+// Quita espacios al inicio y al final, así "   " queda vacío y falla @IsNotEmpty
+export const Trim = () =>
+  Transform(({ value }: { value: unknown }) => (typeof value === 'string' ? value.trim() : value));

@@ -30,6 +30,15 @@ export class ComprasService {
       throw new NotFoundException('Uno o más productos no existen o están desactivados');
     }
  
+    for (const d of dto.detalles) {
+      const producto = productos.find((p) => p.id === d.productoId);
+      if (producto && d.costoUnitario > producto.precioVenta) {
+        throw new BadRequestException(
+          `El costo de "${producto.nombre}" ($${d.costoUnitario}) no puede ser mayor a su precio de venta ($${producto.precioVenta})`,
+        );
+      }
+    }
+
     const detalles = dto.detalles.map((d) =>
       this.compraRepo.manager.create(DetalleCompra, {
         producto: productos.find((p) => p.id === d.productoId),

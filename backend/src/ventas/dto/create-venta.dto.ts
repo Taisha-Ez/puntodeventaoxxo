@@ -1,5 +1,5 @@
 import { Type } from 'class-transformer';
-import { ArrayNotEmpty, IsArray, IsInt, IsNumber, IsPositive, Min, ValidateNested } from 'class-validator';
+import { ArrayNotEmpty, IsArray, IsInt, IsNumber, IsPositive, Min, ValidateNested, Max } from 'class-validator';
  
 export class DetalleVentaDto {
   @IsInt()
@@ -16,6 +16,7 @@ export class PagoVentaDto {
  
   @IsNumber({ maxDecimalPlaces: 2 })
   @IsPositive()
+  @Max(99999999.99, { message: 'El monto no puede ser mayor a 99,999,999.99' })
   monto: number;
 }
  
