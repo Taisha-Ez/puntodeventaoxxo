@@ -108,8 +108,39 @@ export default function PuntoVenta() {
     cargarCatalogo()
   }, [])
 
+  // Long polling: el servidor responde cuando hay un cambio (venta, cancelación,
+  // compra, etc.) o cada ~25 s; en cada cambio se vuelve a cargar el catálogo.
   useEffect(() => {
-    const reloj = setInterval(() => setAhora(new Date()), 1000)
+    let activo = true
+    let version = 0
+    const controlador = new AbortController()
+
+    async function escuchar() {
+      while (activo) {
+        try {
+          const { data } = await cliente.get('/cambios/esperar', {
+            params: { version },
+            signal: controlador.signal,
+          })
+          if (!activo) break
+          if (version !== 0 && data.version !== version) await cargarCatalogo()
+          version = data.version
+        } catch {
+          if (!activo) break
+          await new Promise((r) => setTimeout(r, 3000))
+        }
+      }
+    }
+
+    escuchar()
+    return () => {
+      activo = false
+      controlador.abort()
+    }
+  }, [])
+
+  useEffect(() => {
+    const reloj =setInterval(() => setAhora(new Date()), 1000)
     return () => clearInterval(reloj)
   }, [])
 
